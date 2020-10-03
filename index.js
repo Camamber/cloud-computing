@@ -2,8 +2,26 @@ const express = require('express'),
     app = express(),
     server = require('http').createServer(app);
 
-
 const LabsController = require('./controllers/labsController')
+
+const { Model } = require('objection');
+const Knex = require('knex');
+
+// Initialize knex.
+const knex = Knex({
+    client: 'mysql',
+
+    connection: {
+        host: process.env.MYSQL_HOST,
+        port: process.env.MYSQL_PORT,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE
+    }
+});
+
+// Give the knex instance to objection.
+Model.knex(knex);
 
 
 app.use(express.json())
@@ -19,7 +37,7 @@ app.use((req, res, next) => {
  * Routes
  */
 app.get('/', (req, res) => {
-    res.send({'message': 'Hello its labs Manager'})
+    res.send({ 'message': 'Hello its labs Manager' })
 });
 app.get('/labs', LabsController.index)
 app.post('/labs', LabsController.store)
@@ -28,7 +46,32 @@ app.put('/labs/:id', LabsController.update)
 app.delete('/labs/:id', LabsController.delete)
 
 
+async function createSchema() {
+    if (await knex.schema.hasTable('labs')) {
+        return;
+    }
 
-server.listen(process.env.PORT || 3333, function () {
-    console.log('listen on port http://127.0.0.1:'+process.env.PORT || 3333);
-});
+    // Create database schema. You should use knex migration files
+    // to do this. We create it here for simplicity.
+    await knex.schema.createTable('labs', table => {
+        table.increments('id').primary();
+        table.string('name');
+        table.string('subject_name');
+        table.string('filename');
+        table.timestamps();
+    });
+}
+
+
+createSchema()
+    .then(() => {
+        server.listen(process.env.PORT || 3333, function () {
+            console.log('listen on port http://127.0.0.1:' + (process.env.PORT || 3333));
+        });
+    }).catch(err => {
+        console.error(err);
+        return knex.destroy();
+    });
+
+
+

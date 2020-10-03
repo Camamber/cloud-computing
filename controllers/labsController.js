@@ -7,8 +7,8 @@ class LabsController {
      * @param {import("express").Request} req 
      * @param {import("express").Response} res 
      */
-    static index = (req, res) => {
-        const labs = Lab.all();
+    static index = async (req, res) => {
+        const labs = await Lab.query();
         res.send(labs);
     }
 
@@ -17,11 +17,10 @@ class LabsController {
      * @param {import("express").Request} req 
      * @param {import("express").Response} res 
      */
-    static store = (req, res) => {
+    static store = async (req, res) => {
         const { name, subject_name, filename } = req.body
 
-        const lab = new Lab(name, subject_name, filename);
-        lab.save()
+        const lab = await Lab.query().insert({ name, subject_name, filename });
         res.send(lab);
     }
 
@@ -30,9 +29,9 @@ class LabsController {
      * @param {import("express").Request} req 
      * @param {import("express").Response} res 
      */
-    static show = (req, res) => {
+    static show = async (req, res) => {
         const { id } = req.params
-        const lab = Lab.find(id);
+        const lab = await Lab.query().findById(id);
         if (!lab) {
             res.status(404).send(`Lab with id ${id} not found!`)
         }
@@ -45,19 +44,15 @@ class LabsController {
      * @param {import("express").Request} req 
      * @param {import("express").Response} res 
      */
-    static update = (req, res) => {
+    static update = async (req, res) => {
         const { id } = req.params
         const { body } = req
 
-        const lab = Lab.find(id);
-        
+        const lab = await Lab.query().findById(1).patch(body);
         if (!lab) {
             res.status(404).send(`Lab with id ${id} not found!`)
         }
-        Object.keys(body).forEach(key => {
-            lab[key] = body[key]
-        });
-        
+
         res.send(lab);
     }
 
@@ -66,9 +61,9 @@ class LabsController {
      * @param {import("express").Request} req 
      * @param {import("express").Response} res 
      */
-    static delete = (req, res) => {
+    static delete = async (req, res) => {
         const { id } = req.params
-        const lab = Lab.delete(id);
+        const lab = await Lab.query().deleteById(id);
 
         res.send('OK');
     }
