@@ -57,7 +57,8 @@ class LabsController {
         Object.keys(body).forEach(key => {
             lab[key] = body[key]
         });
-        res.send(labs);
+        
+        res.send(lab);
     }
 
     /**
@@ -67,12 +68,8 @@ class LabsController {
      */
     static delete = (req, res) => {
         const { id } = req.params
-        const labs = Lab.find(id);
-        if (!lab) {
-            res.status(404).send(`Lab with id ${id} not found!`)
-        }
+        const lab = Lab.delete(id);
 
-        labs.delete();
         res.send('OK');
     }
 
