@@ -18,6 +18,9 @@ app.use((req, res, next) => {
 /**
  * Routes
  */
+app.get('/', (req, res) => {
+    res.send({'message': 'Hello its labs Manager'})
+});
 app.get('/labs', LabsController.index)
 app.post('/labs', LabsController.store)
 app.get('/labs/:id', LabsController.show)
