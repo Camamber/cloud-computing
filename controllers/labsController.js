@@ -48,12 +48,12 @@ class LabsController {
         const { id } = req.params
         const { body } = req
 
-        const lab = await Lab.query().findById(1).patch(body);
+        const numUpdated  = await Lab.query().findById(1).patch(body);
         if (!lab) {
             res.status(404).send(`Lab with id ${id} not found!`)
         }
 
-        res.send(lab);
+        res.send(`Laba with id ${id} update ${numUpdated} rows`);
     }
 
     /**
