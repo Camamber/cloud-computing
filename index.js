@@ -12,11 +12,11 @@ const knex = Knex({
     client: 'mysql',
 
     connection: {
-        host: process.env.MYSQL_HOST,
-        port: process.env.MYSQL_PORT,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
-        database: process.env.MYSQL_DATABASE
+        host: process.env.RDS_HOSTNAME,
+        port: process.env.RDS_PORT,
+        user: process.env.RDS_USERNAME,
+        password: process.env.RDS_PASSWORD,
+        database: process.env.RDS_DB_NAME
     }
 });
 
