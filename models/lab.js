@@ -1,33 +1,32 @@
-let labs = [];
-let id = 1
+const { Model } = require('objection');
 
-class Lab {
-    constructor(name, subject_name, filename) {
-        this.id = id++;
-        this.name = name;
-        this.subject_name = subject_name;
-        this.filename = filename
-        this.created_at = Date.now()
+class Lab extends Model {
+    static get tableName() {
+        return 'labs';
     }
 
-    save() {
-        const index = labs.findIndex(lab => lab.id == id);
-        if(index >= 0) {
-            labs[index] = this
-        }
-        labs.push(this)
+    $beforeInsert() {
+        this.created_at = new Date().toISOString();
     }
 
-    static delete(id) {
-        labs = labs.filter(lab => lab.id != id);
+    $beforeUpdate() {
+        this.updated_at = new Date().toISOString();
     }
 
-    static all() {
-        return labs;
-    }
+    static get jsonSchema() {
+        return {
+            type: 'object',
+            required: ['name', 'subject_name', 'filename'],
 
-    static find(id) {
-        return labs.find(lab => lab.id == id);
+            properties: {
+                id: { type: 'integer' },
+                name: { type: 'string' },
+                subject_name: { type: 'string', minLength: 1, maxLength: 255 },
+                filename: { type: 'string', minLength: 1, maxLength: 255 },
+                created_at: { type: 'datetime' },
+                updated_at: { type: 'datetime' }
+            }
+        };
     }
 
 }
