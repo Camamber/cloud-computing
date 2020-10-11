@@ -30,5 +30,5 @@ app.delete('/labs/:id', LabsController.delete)
 
 
 server.listen(process.env.PORT || 3333, function () {
-    console.log('listen on port http://127.0.0.1:'+process.env.PORT || 3333);
+    console.log('listen on port http://127.0.0.1:' + process.env.PORT || 3333);
 });
